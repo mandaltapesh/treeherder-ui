@@ -1,0 +1,20 @@
+<div class="lv-log-msg"
+     ng-if="!linesLoading && !logError && displayedLogLines.length == 0">
+     Click a <span class="lv-log-msg-step">log line</span> above to view
+</div>
+
+<div class="lv-log-msg lv-log-overlay"
+     ng-if="linesLoading"> Loading... </div>
+
+<div class="lv-log-msg lv-log-overlay lv-log-error"
+      ng-if="logError"> Log could not be found </div>
+
+<div ng-repeat="lv_line in displayedLogLines"
+     ng-class="{'text-warning': (lv_line.data.level == 'WARNING'),
+                'fail-line': (lv_line.data.status == 'FAIL'),
+                'lv-selected-lines': (displayedStep.order === lv_line.index)}"
+     class="lv-log-line"
+     line="{{ ::lv_line.data.serial }}">
+
+     <span class="lv-line-text">{{ ::lv_line.data.serial }}: {{ ::lv_line.data.time | date : medium}} {{ ::lv_line.data.status }} {{ ::lv_line.data.subtest }} {{ ::lv_line.data.test }} {{ }} {{ ::lv_line.data.message }}</span>
+</div>
