@@ -87,7 +87,7 @@ testLog.controller('TestLogCtrl', [
                     job_id: $scope.job_id,
                     start_line: range.start,
                     end_line: range.end,
-                    name: "raw",
+                    name: "structured-raw",
                     format: "json"
                 }, {
                     buffer_size: LINE_BUFFER_SIZE
@@ -149,19 +149,12 @@ testLog.controller('TestLogCtrl', [
         $scope.init = function() {
             $log.log(ThJobArtifactModel.get_uri());
 
-            // load the sample structured log summary
-            $http.get('sample-data/plain-chunked_faults.log',
-                    {transformResponse: transformStructuredLogToJson})
-                    .success(function(data) {
-                        $scope.summaryLines = data;
-                    }
-            );
-
             // load just the metadata in the same way as the old logviewer
-            ThJobArtifactModel.get_list({job_id: $scope.job_id, name: 'Structured Log'})
+            ThJobArtifactModel.get_list({job_id: $scope.job_id, name__in: 'Structured Log,faults'})
             .then(function(artifactList){
                 if(artifactList.length > 0){
-                    $scope.artifact = artifactList[0].blob;
+                    $scope.artifact = _.findWhere(artifactList, {name: 'Structured Log'}).blob;
+                    $scope.summaryLines = _.findWhere(artifactList, {name: 'faults'}).blob.all_errors;
 
                     var revision = $scope.artifact.header.revision.substr(0,12);
                     $scope.logRevisionFilterUrl = $scope.urlBasePath +

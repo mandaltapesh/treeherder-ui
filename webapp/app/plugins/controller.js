@@ -80,6 +80,7 @@ treeherder.controller('PluginCtrl', [
                     job_id,
                     {timeout: selectJobPromise});
 
+
                 return $q.all([
                     jobDetailPromise,
                     buildapiArtifactPromise,
