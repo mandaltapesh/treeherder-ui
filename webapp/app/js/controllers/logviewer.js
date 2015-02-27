@@ -153,7 +153,8 @@ logViewer.controller('LogviewerCtrl', [
 
         $scope.init = function() {
             $log.debug(ThJobArtifactModel.get_uri());
-            ThJobArtifactModel.get_list({job_id: $scope.job_id, name: 'text_log_summary'})
+            // @todo: remove ``Structured Log`` reference once old data has expired
+            ThJobArtifactModel.get_list({job_id: $scope.job_id, name__in: 'Structured Log,log_summary'})
             .then(function(artifactList){
                 if(artifactList.length > 0){
                     $scope.artifact = artifactList[0].blob;

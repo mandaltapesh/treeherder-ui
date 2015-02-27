@@ -150,11 +150,18 @@ testLog.controller('TestLogCtrl', [
             $log.log(ThJobArtifactModel.get_uri());
 
             // load just the metadata in the same way as the old logviewer
-            ThJobArtifactModel.get_list({job_id: $scope.job_id, name__in: 'Structured Log,faults'})
+            // @todo: remove "Structured Log" once older data using that name has expired
+            ThJobArtifactModel.get_list({job_id: $scope.job_id, name__in: 'Structured Log,log_summary,structured_faults'})
             .then(function(artifactList){
                 if(artifactList.length > 0){
-                    $scope.artifact = _.findWhere(artifactList, {name: 'Structured Log'}).blob;
-                    $scope.summaryLines = _.findWhere(artifactList, {name: 'faults'}).blob.all_errors;
+                    $scope.artifact = _.findWhere(artifactList, {name: 'log_summary'}).blob;
+
+                    // @todo: remove once the older data has expired with the old name
+                    if (!$scope.artifact) {
+                        $scope.artifact = _.findWhere(artifactList, {name: 'Structured Log'}).blob;
+                    }
+                    // end remove
+                    $scope.summaryLines = _.findWhere(artifactList, {name: 'structured_faults'}).blob.all_errors;
 
                     var revision = $scope.artifact.header.revision.substr(0,12);
                     $scope.logRevisionFilterUrl = $scope.urlBasePath +

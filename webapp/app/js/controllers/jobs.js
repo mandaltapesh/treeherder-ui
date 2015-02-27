@@ -136,7 +136,9 @@ treeherder.controller('ResultSetCtrl', [
                 success(function(data) {
                     if (data.hasOwnProperty("artifacts")) {
                         data.artifacts.forEach(function(artifact) {
-                            if (artifact.name === "text_log_summary") {
+                            if (artifact.name === "log_summary" ||
+                                // @todo remove ``Structured Log`` check once old data has expired.
+                                artifact.name === "Structured Log") {
                                 window.open(thUrl.getLogViewerUrl(artifact.id));
                             }
                         });

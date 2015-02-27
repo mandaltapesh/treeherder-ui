@@ -135,8 +135,9 @@ treeherder.controller('SimilarJobsPluginCtrl', [
                 ];
 
                 //retrieve the list of error lines
+                // @todo: remove ``Structured Log`` reference once old data has expired
                 ThJobArtifactModel.get_list({
-                    name: "text_log_summary",
+                    name__in: "Structured Log,log_summary",
                     job_id: $scope.similar_job_selected.id
                 })
                 .then(function(artifact_list){
