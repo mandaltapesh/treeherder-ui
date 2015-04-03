@@ -23,7 +23,7 @@ treeherder.controller('PluginCtrl', [
         $scope.job = {};
         $scope.artifacts = {};
 
-        var setBuildernameHref = function(buildername){
+        var setJobSearchStrHref = function(jobSearchStr){
 
             var absUrl = $location.absUrl();
             var delimiter = '?';
@@ -34,13 +34,13 @@ treeherder.controller('PluginCtrl', [
                 delimiter = '&';
             }
 
-            $scope.buildbotJobnameHref = absUrl + delimiter +
-                                         'filter-searchStr=' + buildername;
+            $scope.jobSearchStrHref = absUrl + delimiter +
+                                     'filter-searchStr=' + jobSearchStr;
 
         };
 
-        $scope.filterByBuildername = function(buildbotJobname) {
-            thJobFilters.replaceFilter('searchStr', buildbotJobname || null);
+        $scope.filterByJobSearchStr = function(jobSearchStr) {
+            thJobFilters.replaceFilter('searchStr', jobSearchStr || null);
         };
 
         // this promise will void all the ajax requests
@@ -64,6 +64,8 @@ treeherder.controller('PluginCtrl', [
                 $scope.job = {};
                 $scope.artifacts = {};
                 $scope.job_details = [];
+                $scope.jobLinkText = "";
+                $scope.searchStr = "";
                 var jobDetailPromise = ThJobModel.get(
                     $scope.repoName, job_id,
                     {timeout: selectJobPromise});
@@ -108,9 +110,15 @@ treeherder.controller('PluginCtrl', [
                         _.has(buildapi_artifact[0], 'blob')){
                         // this is needed to cancel/retrigger jobs
                         $scope.artifacts.buildapi = buildapi_artifact[0];
-                        $scope.buildbotJobname = $scope.artifacts.buildapi.blob.buildername;
-                        setBuildernameHref($scope.buildbotJobname);
+                        $scope.jobLinkText = $scope.artifacts.buildapi.blob.buildername;
+                    } else {
+                        $scope.jobLinkText = $scope.job.job_type_name  + " " +
+                                             $scope.job.job_type_symbol ;
                     }
+                    $scope.searchStr = $scope.jobLinkText + " " +
+                                       $scope.job.signature;
+                    setJobSearchStrHref($scope.searchStr);
+
                     // the third result comes from the job info artifact promise
                     var jobInfoArtifact = results[2];
                     if (jobInfoArtifact.length > 0) {
@@ -178,8 +186,8 @@ treeherder.controller('PluginCtrl', [
                              $scope.job.build_os || undef
                 };
                 if (_.has($scope.artifacts, "buildapi")) {
-                    $scope.buildbotJobname = $scope.artifacts.buildapi.blob.buildername;
-                    setBuildernameHref($scope.buildbotJobname);
+                    $scope.jobLinkText = $scope.artifacts.buildapi.blob.buildername;
+                    setJobSearchStrHref($scope.searchStr);
                 }
 
                 // time fields to show in detail panel, but that should be grouped together

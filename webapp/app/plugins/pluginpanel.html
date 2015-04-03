@@ -142,11 +142,11 @@
         <li class="small">
           <label>Job:</label>
           <a title="Filter jobs like these"
-             href="{{buildbotJobnameHref}}"
+             href="{{jobSearchStrHref}}"
              prevent-default-on-left-click
-             ng-click="filterByBuildername(buildbotJobname)"
-             copy-value="{{buildbotJobname}}">
-            {{buildbotJobname}}</a>
+             ng-click="filterByJobSearchStr(searchStr)"
+             copy-value="{{jobLinkText}}">
+            {{jobLinkText}}</a>
         </li>
         <li class="small">
           <label>Machine name:</label>
